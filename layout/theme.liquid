@@ -1,0 +1,221 @@
+<!doctype html>
+<!--[if IE 8]><html class="no-js ie8" lang="en"> <![endif]-->
+<!--[if IE 9]><html class="no-js ie9" lang="en"> <![endif]-->
+<!--[if (gt IE 10)|!(IE)]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+  <!-- Alchemy v1.3.2 -->
+
+  <meta charset="utf-8" />
+  <!--[if IE]><meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1' /><![endif]-->
+
+  <title>
+    {{ page_title }}{% if current_tags %}{% assign meta_tags = current_tags | join: ', ' %} &ndash; {{ 'general.meta.tags' | t: tags: meta_tags }}{% endif %}{% if current_page != 1 %} &ndash; {{ 'general.meta.page' | t: page: current_page }}{% endif %}{% unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless %}
+  </title>
+
+  {% if page_description %}
+  <meta name="description" content="{{ page_description | escape }}" />
+  {% endif %}
+
+  <link rel="canonical" href="{{ canonical_url }}" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  {% include 'google-fonts-import' %}
+  {% include 'open-graph-tags' %}
+  {% include 'twitter-card' %}
+
+  {{ content_for_header }}
+
+  {{ 'style.scss.css' | asset_url | stylesheet_tag }}
+
+  <!--[if lt IE 9]>
+  {{ '//html5shiv.googlecode.com/svn/trunk/html5.js' | script_tag }}
+  <![endif]-->
+
+  {% if template contains 'customers' %}
+  {{ 'shopify_common.js' | shopify_asset_url | script_tag }}
+  {{ 'customer_area.js'  | shopify_asset_url | script_tag }}
+  {% endif %}
+
+  {% comment %}
+  Needed when shopify_common.js is used.
+  {% endcomment %}
+  <!--[if lt IE 8]>
+  {{ 'json2.js' | shopify_asset_url | script_tag }}
+  <![endif]-->
+
+  {{ 'option_selection.js' | shopify_asset_url | script_tag }}
+
+  {{ '//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js' | script_tag }}
+  {{ 'api.jquery.js' | shopify_asset_url | script_tag }}
+</head>
+
+<body id="{{ page_title | handle }}" class="{% if customer %}customer-logged-in {% endif %}template-{{ template | replace: '.', ' ' | truncatewords: 1, '' | handle }}{% if template contains 'customers' %} template-customer-area{% endif %}" >
+
+  <div id="mobile-nav">
+    <button class="textbutton mobile-nav-toggle">{{ 'layout.mobile_header.menu' | t }}<span></span><span></span><span></span></button>
+    <a class="cart-summary" href="/cart">{{ 'layout.mobile_header.cart' | t }} ({{ cart.item_count }})</a>
+  </div>
+
+  <header id="pageheader">
+
+    {% comment %} Heading images for each template {% endcomment %}
+    {% include 'header-bg-image' %}
+
+    <div class="container">
+      <div class="links-etc">
+        <button class="textbutton mobile-nav-toggle">{{ 'layout.mobile_header.close' | t }}</button>
+
+        {% if settings.soc_icon_head %}
+        {% include 'social-icons' %}
+        {% endif %}
+
+        {% if shop.customer_accounts_enabled %}
+        <span class="upper-link customer-links">
+          {% if customer %}
+          <a href="/account">{{ 'layout.customer.account' | t }}</a> {{ 'layout.customer.log_out' | t | customer_logout_link }}
+          {% else %}
+          {{ 'layout.customer.log_in' | t | customer_login_link }}
+          {% if shop.customer_accounts_optional %}
+          {{ 'layout.customer.register' | t | customer_register_link }}
+          {% endif %}
+          {% endif %}
+        </span>
+        {% endif %}
+
+
+        <span class="upper-link checkout-link {% if cart.item_count > 0 %}has-popup-tab{% endif %}">
+          <a class="cart-summary" href="/cart">{{ 'layout.header.cart' | t }} ({{ cart.item_count }})</a>
+          {% if cart.item_count > 0 %}
+          <div class="popup-tab">
+            <div class="detail">
+              {% for item in cart.items %}
+              <div class="item clearfix">
+                <img src="{{ item | img_url: 'medium' }}" alt="{{ item.title | escape }}" />
+                <div class="right">
+                  <a class="remove" href="/cart/change?line={{ forloop.index }}&quantity=0">X</a>
+                  <div class="qty">{{ item.quantity }}</div>
+                </div>
+                <div class="detail">
+                  <a class="title" href="{{ item.url }}">{{ item.product.title }}</a>
+                  {% unless item.variant.title contains 'Default' %}<div class="variant">{{ item.variant.title }}</div>{% endunless %}
+                  <div class="price">{{ item.price | money }}</div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+            <div class="total">{{ 'layout.header.total' | t }} {{ cart.total_price | money }}</div>
+            <a class="checkout" href="/cart">{{ 'layout.header.checkout' | t }}</a>
+          </div>
+          {% endif %}
+        </span>
+
+        {% include 'currencies-switcher' %}
+
+        <nav role="navigation" class="nav">
+          {% include 'recursive-navigation-helper' with 'main-menu' %}
+        </nav>
+      </div>
+
+      <div class="logo">
+        {% if settings.use_logo_image %}
+        <a id="logo" href="/" class="image">
+          {% if bg_img != '' %}
+            {% comment %}  Background image  {% endcomment %}
+            <img class="{% if settings.head_img_hideonmob %}desktop-only{% endif %}" src="{{ 'logo_on_header.png' | asset_url }}" alt="{{ shop.name | escape }}"/>
+
+            {% if settings.head_img_hideonmob %}
+            <img class="mobile-only" src="{{ 'logo.png' | asset_url }}" alt="{{ shop.name | escape }}"/>
+            {% endif %}
+          {% else %}
+            {% comment %}  No background image  {% endcomment %}
+            {{ 'logo.png' | asset_url | img_tag: shop.name }}
+          {% endif %}
+        </a>
+        {% endif %}
+
+        {% if template == 'index' %}
+        <h1 id="site-title" class="text{% if settings.use_logo_image %} hidden{% endif %}">
+          <a href="/">{{ shop.name }}</a>
+        </h1>
+        {% else %}
+        <a id="site-title" class="text{% if settings.use_logo_image %} hidden{% endif %}" href="/">{{ shop.name }}</a>
+        {% endif %}
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <div id="main" role="main">
+      {{ content_for_layout }}
+    </div>
+
+    <footer id="pagefooter">
+
+      {% if linklists.footer.links.size > 0 %}
+      <nav class="nav" role="navigation">
+        <ul>
+          {% for link in linklists.footer.links %}
+          <li><a href="{{ link.url }}" title="{{ link.title }}"{% if link.active %} class="active"{% endif %}>{{ link.title }}</a></li>
+          {% endfor %}
+        </ul>
+      </nav>
+      {% endif %}
+
+      {% if settings.soc_icon_foot %}
+      {% include 'social-icons' %}
+      {% endif %}
+
+      <p class="copyright" role="contentinfo">
+        <span class="seg">&copy; {{ "now" | date: "%Y" }} {{ shop.name | link_to: '/' }}</span>
+        {{ 'layout.footer.theme_by_html' | t }}
+        {{ powered_by_link }}
+      </p>
+
+      <ul class="payment-methods">
+        {% for type in shop.enabled_payment_types %}
+        <li><img src="{{ type | payment_type_img_url }}" /></li>
+        {% endfor %}
+      </ul>
+
+    </footer>
+
+  </div><!-- end of .container -->
+
+  <!-- Search form -->
+  <div id="search-modal">
+    <div class="container">
+      <form action="/search" method="get">
+
+        {% comment %} Remove the following line to search everything, not just products {% endcomment %}
+        <input type="hidden" name="type" value="product">
+
+        <input type="text" name="q" placeholder="{{ 'general.search.placeholder' | t }}" autocomplete="off" required/><input type="submit" value="&rarr;" />
+      </form>
+    </div>
+  </div>
+
+  <!-- Scroll to top -->
+  <a id="scroll-top" href="#">{{ 'general.scroll_up.to_top' | t }}</a>
+
+  {{ 'libs.js'  | asset_url | script_tag }}
+  {{ 'main.js'  | asset_url | script_tag }}
+
+  {% include 'currencies' %}
+<script>
+  jQuery(function() {
+    jQuery('.swatch :radio').change(function() {
+      var optionIndex = jQuery(this).closest('.swatch').attr('data-option-index');
+      var optionValue = jQuery(this).val();
+      jQuery(this)
+        .closest('form')
+        .find('.single-option-selector')
+        .eq(optionIndex)
+        .val(optionValue)
+        .trigger('change');
+    });
+  });
+</script>
+</body>
+</html>

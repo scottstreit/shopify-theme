@@ -1,0 +1,9 @@
+<h1>{{ collection.title }}</h1>
+
+{% if collection.description.size > 0 %}
+<div class="rte">
+  {{ collection.description }}
+</div>
+{% endif %}
+
+{% include 'collection-listing' with collection.handle %}

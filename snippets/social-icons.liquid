@@ -1,0 +1,35 @@
+<div class="social-icons size-{{ settings.soc_icon_size }}">
+  {% if settings.social_twitter_url != blank %}
+  <a title="Twitter" class="twitter" target="_blank" href="{{ settings.social_twitter_url }}"><i class="icon-twitter"><span>Twitter</span></i></a>
+  {% endif %}
+  {% if settings.social_facebook_url != blank %}
+  <a title="Facebook" class="facebook" target="_blank" href="{{ settings.social_facebook_url }}"><i class="icon-facebook"><span>Facebook</span></i></a>
+  {% endif %}
+  {% if settings.social_tumblr_url != blank %}
+  <a title="Tumblr" class="tumblr" target="_blank" href="{{ settings.social_tumblr_url }}"><i class="icon-tumblr"><span>Tumblr</span></i></a>
+  {% endif %}
+  {% if settings.social_rss_url != blank %}
+  <a title="RSS" class="rss" target="_blank" href="{{ settings.social_rss_url }}"><i class="icon-rss"><span>RSS</span></i></a>
+  {% endif %}
+  {% if settings.social_youtube_url != blank %}
+  <a title="Youtube" class="youtube" target="_blank" href="{{ settings.social_youtube_url }}"><i class="icon-youtube"><span>YouTube</span></i></a>
+  {% endif %}
+  {% if settings.social_vimeo_url != blank %}
+  <a title="Vimeo" class="vimeo" target="_blank" href="{{ settings.social_vimeo_url }}"><i class="icon-vimeo"><span>Vimeo</span></i></a>
+  {% endif %}
+  {% if settings.social_instagram_url != blank %}
+  <a title="Instagram" class="instagram" target="_blank" href="{{ settings.social_instagram_url }}"><i class="icon-instagram"><span>Instagram</span></i></a>
+  {% endif %}
+  {% if settings.social_pinterest_url != blank %}
+  <a title="Pinterest" class="pinterest" target="_blank" href="{{ settings.social_pinterest_url }}"><i class="icon-pinterest"><span>Pinterest</span></i></a>
+  {% endif %}
+  {% if settings.social_flickr_url != blank %}
+  <a title="Flickr" class="flickr" target="_blank" href="{{ settings.social_flickr_url }}"><i class="icon-flickr"><span>Flickr</span></i></a>
+  {% endif %}
+  {% if settings.social_google_url != blank %}
+  <a title="Google+" class="google" target="_blank" href="{{ settings.social_google_url }}"><i class="icon-googleplus"><span>Google+</span></i></a>
+  {% endif %}
+  <span class="div">|</span>
+  {% capture search_label %}{{ 'layout.header.search_label' | t }}{% endcapture %}
+  <a title="Search" class="search {% if search_label != blank %}lozenge{% endif %}" href="/search"><i class="icon-mag"></i>{{ search_label }}</a>
+</div><!-- .social -->

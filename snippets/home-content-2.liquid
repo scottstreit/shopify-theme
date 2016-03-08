@@ -1,0 +1,17 @@
+{% assign page = pages[settings.home_page_2] %}
+{% assign page_second = pages[settings.home_page_3] %}
+
+{% if settings.home_page_2_cols %}
+<div class="grid clearfix">
+  <div class="column half">
+    {% endif %}
+    
+    <div class="rte content-row">{{ page.content }}</div>
+
+    {% if settings.home_page_2_cols %}
+  </div>
+  <div class="column half">
+    <div class="rte content-row">{{ page_second.content }}</div>
+  </div>
+</div>
+{% endif %}

@@ -1,0 +1,52 @@
+{% comment %}
+Checks if an image is available for the current template, and outputs it if it is
+{% endcomment %}
+
+{% assign bg_img = '' %}
+
+{% if template contains 'index' and settings.head_img_home_show %}
+{% assign bg_img = 'head_img_home.jpg' | asset_url %}
+
+{% elsif template contains 'collection' and settings.head_img_coll_handled and collection.handle %}
+{% assign bg_img = 'collection-header-' | append: collection.handle | append: '.jpg' | file_url %}
+
+{% elsif template contains 'collection' and settings.head_img_coll_show %}
+{% assign bg_img = 'head_img_coll.jpg' | asset_url %}
+
+{% elsif template contains 'search' and settings.head_img_coll_show %}
+{% assign bg_img = 'head_img_coll.jpg' | asset_url %}
+
+{% elsif template contains 'product' and settings.head_img_prod_show %}
+{% assign bg_img = 'head_img_prod.jpg' | asset_url %}
+
+{% elsif template contains 'blog' and settings.head_img_blog_show %}
+{% assign bg_img = 'head_img_blog.jpg' | asset_url %}
+
+{% elsif template contains 'article' and settings.head_img_blog_show %}
+{% assign bg_img = 'head_img_blog.jpg' | asset_url %}
+
+{% elsif template contains 'cart' and settings.head_img_cart_show %}
+{% assign bg_img = 'head_img_cart.jpg' | asset_url %}
+
+{% elsif template contains 'customers' and settings.head_img_cust_show %}
+{% assign bg_img = 'head_img_cust.jpg' | asset_url %}
+
+{% elsif settings.head_img_page_show %}
+{% assign bg_img = 'head_img_page.jpg' | asset_url %}
+
+{% endif %}
+
+{% if bg_img != '' %}
+<div class="head-img-cont fillmode-{{ settings.head_img_fill }}" {% if settings.head_img_fill != 'cover' %}style="background-image: url({{ bg_img }})"{% endif %}>
+  <img class="background" src="{{ bg_img }}" alt="{{ shop.name | escape }}" />
+  {% if settings.head_img_home_text_show and template contains 'index' %}
+  <div class="overlay scaled-text-base"><div class="inner"><div><h1 class="text scaled-text"><span style="font-size:300%">
+    {% if settings.head_img_home_text == blank %}
+    {{ 'home_page.onboarding.heading_welcome' | t }}
+    {% else %}
+    {{ settings.head_img_home_text }}
+    {% endif %}
+    </span></h1></div></div></div>
+  {% endif %}
+</div>
+{% endif %}

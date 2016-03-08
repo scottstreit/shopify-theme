@@ -1,0 +1,25 @@
+<div class="grid clearfix">
+  {% for i in (1..4) %}
+  {% assign text_setting = 'home_ad_' | append: i | append: '_text' %}
+  {% assign url_setting = 'home_ad_' | append: i | append: '_url' %}
+  {% assign width_setting = 'home_ad_' | append: i | append: '_size' %}
+  {% assign show_setting = 'home_ad_' | append: i | append: '_show' %}
+  {% if settings[show_setting] %}
+  <div class="column {{ settings[width_setting] }} bleed img-block scaled-text-base" data-text-scale-from="256">
+    {{ 'home_ad_'| append: i | append: '.jpg' | asset_url | img_tag: settings[text_setting] | link_to: settings[url_setting] }}
+    
+    {% if settings[text_setting] != '' %}
+    <div class="overlay">
+      <div class="inner">
+        <span>
+          <a href="{{ settings[url_setting] }}" class="scaled-text">
+            {{ settings[text_setting] }}
+          </a>
+        </span>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+  {% endif %}
+  {% endfor %}
+</div>

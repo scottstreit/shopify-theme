@@ -1,0 +1,33 @@
+{% assign blog = blogs[settings.home_blog] %}
+{% if blog and blog.articles.size > 0 %}
+<div class="alt-text-style grid clearfix">
+  {% for article in blog.articles limit: 2 %}
+  <div class="column half article-excerpt">
+    
+    {% if article.excerpt == blank %}
+    {% capture split_content %}<p>{{ article.content | strip_html | truncate: 150 }}</p>{% endcapture %}
+    {% else %}
+    {% assign split_content = article.excerpt %}
+    {% endif %}
+    
+    {% if settings.home_blog_img_above_title %}
+    {% if article.image %}
+    <div class="image-head"><a href="{{ article.url }}">{{ article.image | img_url: 'grande' | img_tag: article.image.alt }}</a></div>
+    
+    {% else %}
+    
+    {% include 'split_images_from_content' with split_content %}
+    <div class="image-head"><a href="{{ article.url }}">{{ split_images }}</a></div>
+    {% endif %}
+    {% endif %}
+    
+    <div class="rte">
+      <h4>{{ article.title | link_to: article.url }}</h4>
+      {{ split_content }}
+    </div>
+    
+    <p><a class="read-more" href="{{ article.url }}">{{ 'blogs.article.read_more_html' | t }}</a></p>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}

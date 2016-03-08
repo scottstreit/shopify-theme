@@ -1,0 +1,8 @@
+{% assign collection = collections[settings.home_prods_coll] %}
+<div class="grid product-list clearfix">
+{% for product in collection.products %}
+  {% include 'product-grid-item' %}
+{% else %}
+  {% if collection.title != blank %}<p><em>{{ 'home_page.onboarding.no_products_html' | t: title: collection.title }}</em></p>{% endif %}
+{% endfor %}
+</div>

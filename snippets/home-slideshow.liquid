@@ -1,0 +1,23 @@
+<div class="row">
+  <div class="flexslider">
+    <ul class="slides">
+      {% for i in (1..5) %}
+      {% capture show_idx %}home_slide_{{i}}_show{% endcapture %}
+      {% capture url_idx %}home_slide_{{i}}_url{% endcapture %}
+      {% capture text_idx %}home_slide_{{i}}_text{% endcapture %}
+      {% capture alt_text_idx %}home_slide_{{i}}_alt_text{% endcapture %}
+      {% capture img_name %}home_slide_{{i}}.jpg{% endcapture %}
+      {% if settings[show_idx] %}
+      <li>
+        <a href="{{ settings[url_idx] }}">
+          <img src="{{ img_name | asset_url }}" alt="{{ settings[alt_text_idx] | escape }}" />
+        </a>
+        {% unless settings[text_idx] == empty %}
+        <div class="caption"><div class="rte">{{ settings[text_idx] }}</div></div>
+        {% endunless %}
+      </li>
+      {% endif %}
+      {% endfor %}
+    </ul>
+  </div>
+</div>
