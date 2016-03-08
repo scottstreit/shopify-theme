@@ -2937,3 +2937,25 @@ html.template-password {
 .swatch.error code {
   font-family:monospace;
 }
+
+.img-block:after {
+  content: '\A';
+  position: absolute;
+  width: 100%; height:100%;
+  top:0;
+  left:0;
+  background:rgba(195,0,0,0.6);
+  opacity: 0;
+  transition: all 1s;
+  -webkit-transition: all 1s;
+}
+.img-block:hover:after  {
+  opacity: 1;
+}
+.overlay {
+  z-index: 100;
+}
+
+.img-block:hover {
+  background: rgba(148,172,109,.75);
+}
