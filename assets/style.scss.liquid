@@ -642,6 +642,23 @@ hr {
   padding: 0;
 }
 
+/* home page nav adjustments */
+.template-index .nav {
+  float: right;
+  background: #ffffff;
+  color: $nav-col;
+}
+.template-index .nav li a:hover {
+  color: $nav-hover;
+}
+.template-index #pageheader nav > ul > li > a:hover > span {
+  border-bottom-color: $nav-hover;
+}
+.template-index.header-has-bg #pageheader nav > ul > li > a:hover > span {
+    border-bottom-color: $nav-hover;
+}
+
+
 .nav a {
   padding: 0 1em;
   /* fixed height required for dropdown top */
