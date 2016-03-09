@@ -5,7 +5,7 @@
   <meta itemprop="url" content="{{ shop.url }}{{ product.url }}" />
   <meta itemprop="image" content="{{ product.featured_image.src | product_img_url: 'grande' }}" />
   {% for variant in product.variants %}
-  <div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+    <div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
     <meta itemprop="price" content="{{ variant.price | money_without_currency | strip_html }}" />
     <meta itemprop="priceCurrency" content="{{ shop.currency }}" />
     {% if product.available %}
@@ -77,29 +77,9 @@
         {% endif %}
       </div>
 
-      <span class="quantity-area">
-        <label for="quantity">{{ 'products.product.quantity' | t }}</label> <input class="quantity select-on-focus" id="quantity" name="quantity" value="1" />
-      </span>
 
-      <div id="product-add">
-        <button name="add" id="add">{{ variant.price | money }} <span class="div">|</span> {{ 'products.product.add_to_cart' | t }}</button>
-      </div>
-
-    </div><!-- .product-form -->
-
-    <div id="backorder" class="hidden">
-      <p><span id="selected-variant"></span> {{ 'products.product.backorder' | t }}</p>
-    </div>
-
-    {% else %}
-    <h5>{{ 'products.product.product_unavailable' | t }}</h5>
-    {% endif %}
-
-    {% include 'social-sharing' %}
-
-    {% assign display_image_size = settings.prod_page_img_size %}
-    <div class="row clearfix">
-      <div class="product-photos">
+      {% assign display_image_size = settings.prod_page_img_size %}
+      <div class="product-photos column half">
         <div class="main">
           {% if settings.prod_lightbox %}
           {% assign master_url = featured_image | img_url: 'master' %}
@@ -120,7 +100,30 @@
         </div>
         {% endif %}
       </div><!-- .product-photos -->
+
+      <span class="quantity-area">
+        <label for="quantity">{{ 'products.product.quantity' | t }}</label> <input class="quantity select-on-focus" id="quantity" name="quantity" value="1" />
+      </span>
+
+      <div id="product-add">
+        <button name="add" id="add">{{ variant.price | money }} <span class="div">|</span> {{ 'products.product.add_to_cart' | t }}</button>
+      </div>
+
+
+    </div><!-- .product-form -->
+
+    <div id="backorder" class="hidden">
+      <p><span id="selected-variant"></span> {{ 'products.product.backorder' | t }}</p>
     </div>
+
+    {% else %}
+    <h5>{{ 'products.product.product_unavailable' | t }}</h5>
+    {% endif %}
+
+    {% include 'social-sharing' %}
+
+
+
 
 
     <div id="product-description" class="rte content-row" itemprop="description">

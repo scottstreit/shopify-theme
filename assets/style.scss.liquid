@@ -181,8 +181,12 @@ img { height: auto; }
   padding-right: 0;
   border-top: 10px solid #ffffff;
 }
-.column.bleed:last-child {
-  border-left: 10px solid #ffffff;
+
+.column.half.bleed:nth-child(odd) {
+  border-left: 5px solid #ffffff;
+}
+.column.half.bleed:nth-child(even) {
+  border-right: 5px solid #ffffff;
 }
 
 .first-in-row {
@@ -214,6 +218,12 @@ header, footer, #main {
   }
   .column.three-quarters {
     width: 100%;
+  }
+  .column.half.bleed:nth-child(odd) {
+    border-left: 0;
+  }
+  .column.half.bleed:nth-child(even) {
+    border-right: 0;
   }
 }
 
@@ -2129,7 +2139,7 @@ $header-shadow-spread-offset: 10px;
   border-bottom-color: $nav-col;
 }
 
-{% if settings.col_head_bg_use %}#pageheader nav > ul > li > a:hover > span,{% endif %}
+/*{% if settings.col_head_bg_use %}#pageheader nav > ul > li > a:hover > span,{% endif %}*/
 .header-has-bg #pageheader nav > ul > li > a:hover > span {
   border-bottom-color: $nav-col-overlay;
 }
