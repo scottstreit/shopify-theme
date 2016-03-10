@@ -1,7 +1,7 @@
 {
   "current": {
     "col_text": "#808e99",
-    "col_headings": "#4a5265",
+    "col_headings": "#808080",
     "col_links": "#e32526",
     "col_content_bg": "#ffffff",
     "col_page_bg": "#f4f4f4",
@@ -69,7 +69,7 @@
     "home_section_5": "",
     "home_section_6": "",
     "head_img_home_text_show": true,
-    "head_img_home_text": "",
+    "head_img_home_text": "Be Happy. Live Konfo.",
     "home_slide_1_show": false,
     "home_slide_1_alt_text": "",
     "home_slide_1_url": "\/",
