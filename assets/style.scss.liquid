@@ -1273,9 +1273,14 @@ hr {
   margin: 1em 0 0;
 }
 
+form #product-add {
+  display: inline-block;
+  vertical-align: middle;
+  float: right;
+}
+
 .product-form #product-variants,
-.product-form #product-variants .selector-wrapper,
-.product-form #product-add {
+.product-form #product-variants .selector-wrapper {
   display: inline-block;
   vertical-align: top;
   max-width: 100%;
@@ -1292,10 +1297,6 @@ hr {
 
 .product-form #product-variants .selector-wrapper label {
   display: none;
-}
-
-.product-form select {
-  margin: 0 0 1em;
 }
 
 .product-form .quantity-area {
@@ -1378,9 +1379,10 @@ hr {
 .product-photos .thumbnails .thumb {
   position: relative;
   display: inline-block;
-  margin: 2px;
+  margin: 2px 5px, 2px;
   padding: 2px;
   border: 1px solid transparent;
+  float: left;
 }
 
 .product-photos .thumbnails .thumb.active,
