@@ -19,6 +19,7 @@ $heading-text-col:			{{ settings.col_headings }};
 $nav-col:					{{ settings.col_nav_links }};
 $nav-col-overlay:			{{ settings.col_nav_links_overlay }};
 
+
 $dropdown-bg-col:			{{ settings.col_drop_bg }};
 $dropdown-border-col:		{{ settings.col_drop_bord }};
 $nav-sub-bg:				{{ settings.col_drop_sub_bg }};
@@ -1385,9 +1386,14 @@ form #product-add {
   float: left;
 }
 
+.product-photos .thumbnails .thumb {
+  margin: 0 2px;
+  border-color: darken($normal-text-col, 2%);
+}
+
 .product-photos .thumbnails .thumb.active,
 .product-photos .thumbnails .thumb:hover {
-  border-color: rgba($normal-text-col, 0.1);
+  border-color: darken($normal-text-col, 70%);
 }
 
 .loading-img {

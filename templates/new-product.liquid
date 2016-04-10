@@ -1,0 +1,213 @@
+{% assign variant = product.selected_or_first_available_variant %}
+{% assign featured_image = product.selected_or_first_available_variant.featured_image | default:product.featured_image %}
+<div class="product" itemscope itemtype="http://schema.org/Product">
+
+  <meta itemprop="url" content="{{ shop.url }}{{ product.url }}" />
+  <meta itemprop="image" content="{{ product.featured_image.src | product_img_url: 'grande' }}" />
+  {% for variant in product.variants %}
+    <div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+    <meta itemprop="price" content="{{ variant.price | money_without_currency | strip_html }}" />
+    <meta itemprop="priceCurrency" content="{{ shop.currency }}" />
+    {% if product.available %}
+    <link itemprop="availability" href="http://schema.org/InStock" />
+    {% else %}
+    <link itemprop="availability" href="http://schema.org/OutOfStock" />
+    {% endif %}
+  </div>
+  {% endfor %}
+
+  <form action="/cart/add" method="post" enctype="multipart/form-data">
+
+    <div class="title-row">
+      <h1 class="page-title" itemprop="name">{{ product.title }}</h1>
+
+      <div class="next-prev">
+        {% if collection.previous_product %}
+        <a class="control-prev" href="{{ collection.previous_product }}">&larr; {{ 'products.product.previous' | t }}</a>
+        {% endif %}
+        {% if collection.next_product %}
+        <a class="control-next" href="{{ collection.next_product }}">{{ 'products.product.next' | t }} &rarr;</a>
+        {% endif %}
+      </div>
+    </div>
+
+    {% if variant.compare_at_price > variant.price %}
+    <p><span class="sale-label">{{ 'products.product.sale' | t }}</span></p>
+    {% endif %}
+
+    {% if settings.prod_show_brand %}
+    {% comment %}
+    Do we have a collection that has the same name as our product vendor name?
+    If we do, let's have the vendor link point to it.
+    If not, we will point to the automatic vendor collection.
+    {% endcomment %}
+    {% assign product_vendor_handle = product.vendor | handle %}
+    {% if collections[product_vendor_handle].handle == product_vendor_handle %}
+    	{% assign vendor_url = collections[product_vendor_handle].url %}
+    {% else %}
+    	{% assign vendor_url = product.vendor | url_for_vendor %}
+    {% endif %}
+    <p class="brand" itemprop="brand">{{ product.vendor | link_to: vendor_url }}</p>
+    {% endif %}
+
+
+    {% comment %}
+    Supporting the Grapevine Reviews app out of the box.
+    https://apps.shopify.com/grapevine-reviews
+
+    Remove comment tags around the div below.
+    {% endcomment %}
+
+    {% comment %}
+    <div id="shopify-product-reviews" data-id="{{ product.id }}">{{ product.metafields.spr.reviews }}</div>
+    {% endcomment %}
+
+
+    {% if product.available %}
+    <div class="product-form">
+
+      <div id="product-variants" class="{% if product.variants.size == 1 %} hidden{% endif %}">
+        <select id="product-select" name="id" class="hidden">
+          {% for variant in product.variants %}
+          <option {% if variant == product.selected_or_first_available_variant %} selected="selected" {% endif %} value="{{ variant.id }}" data-sku="{{ variant.sku }}">{{ variant.title }} - {{ variant.price | money }}</option>
+          {% endfor %}
+        </select>
+        {% if product.available and product.variants.size > 1 %}
+          {% include 'swatch' with 'Color' %}
+        {% endif %}
+      </div>
+
+
+      {% assign display_image_size = settings.prod_page_img_size %}
+      <div class="product-photos column half">
+        <div class="main">
+          {% if settings.prod_lightbox %}
+          {% assign master_url = featured_image | img_url: 'master' %}
+          {{ featured_image | img_url: display_image_size | img_tag: featured_image.alt | link_to: master_url, featured_image.alt }}
+          {% else %}
+          {{ featured_image | img_url: display_image_size | img_tag: featured_image.alt }}
+          {% endif %}
+        </div>
+        {% if product.images.size > 1 %}
+        <div class="thumbnails">
+          <div><a class="load-all-thumbs button" href="#">{{ 'products.product.expand_images' | t }}</a></div>
+
+          {% for image in product.images %}
+          <a class="thumb" {% if image.src == featured_image %} class="active" {% endif %} title="{{ image.alt | escape }}" href="{{ image | product_img_url: 'master' }}" data-display-url="{{ image | product_img_url: display_image_size }}">
+            <img src="{{ image | img_url: 'small' }}" alt="{{ image.alt | escape }}"/>
+          </a>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div><!-- .product-photos -->
+
+      <span class="quantity-area">
+        <label for="quantity">{{ 'products.product.quantity' | t }}</label> <input class="quantity select-on-focus" id="quantity" name="quantity" value="1" />
+      </span>
+
+      <div id="product-add">
+        <button name="add" id="add">{{ variant.price | money }} <span class="div">|</span> {{ 'products.product.add_to_cart' | t }}</button>
+      </div>
+
+
+    </div><!-- .product-form -->
+
+    <div id="backorder" class="hidden">
+      <p><span id="selected-variant"></span> {{ 'products.product.backorder' | t }}</p>
+    </div>
+
+    {% else %}
+    <h5>{{ 'products.product.product_unavailable' | t }}</h5>
+    {% endif %}
+
+    {% include 'social-sharing' %}
+
+
+
+
+
+    <div id="product-description" class="rte content-row" itemprop="description">
+      {{ product.description }}
+    </div>
+
+  </form>
+
+</div>
+
+<script>
+
+var selectCallback = function(variant, selector) {
+
+  if (variant) {
+
+    // BEGIN SWATCHES
+    var form = jQuery('#' + selector.domIdPrefix).closest('form');
+    for (var i=0,length=variant.options.length; i<length; i++) {
+      var radioButton = form.find('.swatch[data-option-index="' + i + '"] :radio[value="' + variant.options[i] +'"]');
+      if (radioButton.size()) {
+        radioButton.get(0).checked = true;
+      }
+    }
+
+// END SWATCHES
+
+    // Selected a valid variant that is available.
+    if (variant.available) {
+
+      // Enabling add to cart button.
+      var addBtnText = Shopify.formatMoney(variant.price, {{ shop.money_format | json }});
+      if ( variant.compare_at_price > variant.price ) {
+        jQuery('#add').addClass('on-sale');
+        addBtnText += ' <span class="pre-sale-price">' + Shopify.formatMoney(variant.compare_at_price, {{ shop.money_format | json }}) + '</span>';
+      } else {
+        jQuery('#add').removeClass('on-sale');
+      }
+      addBtnText += ' <span class="div">|</span> ' + {{ 'products.product.add_to_cart' | t | json }};
+      jQuery('#add').removeClass('disabled').removeAttr('disabled').html(addBtnText);
+
+      // If item is backordered yet can still be ordered, we'll show special message.
+      if (variant.inventory_management && variant.inventory_quantity <= 0) {
+        jQuery('#selected-variant').html({{ product.title | json }}{% unless hide_default_title %} + ' - ' + variant.title{% endunless %});
+        jQuery('#backorder').removeClass("hidden");
+      } else {
+        jQuery('#backorder').addClass("hidden");
+      }
+
+    } else {
+      // Variant is sold out.
+      jQuery('#backorder').addClass('hidden');
+      jQuery('#add').html({{ 'products.variant.out_of_stock' | t | json }}).addClass('disabled').attr('disabled', 'disabled');
+    }
+
+  } else {
+    // variant doesn't exist.
+    var html = {{ 'products.variant.non_existent' | t | json }};
+    var anySelectsEmpty = $('.selector-wrapper select').filter(function(){ return $(this).val() == ''; }).length > 0;
+    if(anySelectsEmpty) {
+      html = {{ product.price | money | json }} + ' <span class="div">|</span> ' + {{ 'products.product.add_to_cart' | t | json }};
+    }
+    jQuery('#backorder').addClass('hidden');
+    jQuery('#add').html(html).addClass('disabled').attr('disabled', 'disabled');
+  }
+
+
+  if (variant && variant.featured_image) {
+    var newImage = Shopify.Image.removeProtocol(variant.featured_image.src);
+    //Find and click matching thumb
+    $('.thumbnails a.thumb').filter('[href="' + newImage + '"]').trigger('click');
+  }
+};
+
+
+{% if product.available %}
+jQuery(function($) {
+
+  new Shopify.OptionSelectors('product-select', { product: {{ product | json }}, onVariantSelected: selectCallback, enableHistoryState: true });
+
+  // Add label if only one product option and it isn't 'Title'.
+  {% if product.options.size == 1 and product.options.first != 'Title' %}
+    $('.selector-wrapper:eq(0)').prepend('<label>{{ product.options.first }}</label>');
+  {% endif %}
+});
+{% endif %}
+</script>

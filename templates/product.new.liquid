@@ -76,6 +76,7 @@
 
       {% if product.available %}
       <div class="product-form">
+        
         <div id="product-variants" class="{% if product.variants.size == 1 %} hidden{% endif %}">
           <select id="product-select" name="id" class="hidden">
             {% for variant in product.variants %}
